@@ -59,5 +59,6 @@ namespace Book
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Translator> Translators { get; set; }
         public virtual DbSet<TranslatorDetail> TranslatorDetails { get; set; }
+        public virtual DbSet<MemberLevel> MemberLevels { get; set; }
     }
 }

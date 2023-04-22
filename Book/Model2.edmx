@@ -168,6 +168,19 @@
           <Property Name="Memberphone" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="MemberAddress" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="PaymentID" Type="int" Nullable="false" />
+          <Property Name="LevelID" Type="int" Nullable="false" />
+          <Property Name="CostAmount" Type="int" Nullable="false" />
+          <Property Name="Points" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MemberLevel">
+          <Key>
+            <PropertyRef Name="LevelID" />
+          </Key>
+          <Property Name="LevelID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LevelName" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="MinCost" Type="int" Nullable="false" />
+          <Property Name="DiscountID" Type="int" Nullable="false" />
+          <Property Name="LevelDescription" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
@@ -583,6 +596,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Member_MemberLevel">
+          <End Role="MemberLevel" Type="Self.MemberLevel" Multiplicity="1" />
+          <End Role="Member" Type="Self.Member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MemberLevel">
+              <PropertyRef Name="LevelID" />
+            </Principal>
+            <Dependent Role="Member">
+              <PropertyRef Name="LevelID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberLevel_Discount">
+          <End Role="Discount" Type="Self.Discount" Multiplicity="1" />
+          <End Role="MemberLevel" Type="Self.MemberLevel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Discount">
+              <PropertyRef Name="DiscountID" />
+            </Principal>
+            <Dependent Role="MemberLevel">
+              <PropertyRef Name="DiscountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Order_Discount">
           <End Role="Discount" Type="Self.Discount" Multiplicity="0..1" />
           <End Role="Order" Type="Self.Order" Multiplicity="*" />
@@ -805,6 +842,7 @@
           <EntitySet Name="Discount_Detail" EntityType="Self.Discount_Detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Language" EntityType="Self.Language" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Member" EntityType="Self.Member" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MemberLevel" EntityType="Self.MemberLevel" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderDetail" EntityType="Self.OrderDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Painter" EntityType="Self.Painter" Schema="dbo" store:Type="Tables" />
@@ -909,6 +947,14 @@
           <AssociationSet Name="FK_Discount_Detail_Discount" Association="Self.FK_Discount_Detail_Discount">
             <End Role="Discount" EntitySet="Discount" />
             <End Role="Discount_Detail" EntitySet="Discount_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Member_MemberLevel" Association="Self.FK_Member_MemberLevel">
+            <End Role="MemberLevel" EntitySet="MemberLevel" />
+            <End Role="Member" EntitySet="Member" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberLevel_Discount" Association="Self.FK_MemberLevel_Discount">
+            <End Role="Discount" EntitySet="Discount" />
+            <End Role="MemberLevel" EntitySet="MemberLevel" />
           </AssociationSet>
           <AssociationSet Name="FK_Order_Discount" Association="Self.FK_Order_Discount">
             <End Role="Discount" EntitySet="Discount" />
@@ -1155,6 +1201,7 @@
           <Property Name="IsActive" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Discount_Detail" Relationship="Self.FK_Discount_Detail_Discount" FromRole="Discount" ToRole="Discount_Detail" />
           <NavigationProperty Name="Orders" Relationship="Self.FK_Order_Discount" FromRole="Discount" ToRole="Order" />
+          <NavigationProperty Name="MemberLevels" Relationship="BookShopModel.FK_MemberLevel_Discount" FromRole="Discount" ToRole="MemberLevel" />
         </EntityType>
         <EntityType Name="Discount_Detail">
           <Key>
@@ -1195,6 +1242,10 @@
           <NavigationProperty Name="CustomerServices" Relationship="Self.FK_CustomerService_Member" FromRole="Member" ToRole="CustomerService" />
           <NavigationProperty Name="Payment" Relationship="Self.FK_Member_Payment" FromRole="Member" ToRole="Payment" />
           <NavigationProperty Name="Orders" Relationship="Self.FK_Order_Member" FromRole="Member" ToRole="Order" />
+          <Property Name="LevelID" Type="Int32" Nullable="false" />
+          <Property Name="CostAmount" Type="Int32" Nullable="false" />
+          <Property Name="Points" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="MemberLevel" Relationship="BookShopModel.FK_Member_MemberLevel" FromRole="Member" ToRole="MemberLevel" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
@@ -2052,7 +2103,52 @@
             <End Role="Translator" EntitySet="Translators" />
             <End Role="TranslatorDetail" EntitySet="TranslatorDetails" />
           </AssociationSet>
+          <EntitySet Name="MemberLevels" EntityType="BookShopModel.MemberLevel" />
+          <AssociationSet Name="FK_MemberLevel_Discount" Association="BookShopModel.FK_MemberLevel_Discount">
+            <End Role="Discount" EntitySet="Discounts" />
+            <End Role="MemberLevel" EntitySet="MemberLevels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Member_MemberLevel" Association="BookShopModel.FK_Member_MemberLevel">
+            <End Role="MemberLevel" EntitySet="MemberLevels" />
+            <End Role="Member" EntitySet="Members" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="MemberLevel">
+          <Key>
+            <PropertyRef Name="LevelID" />
+          </Key>
+          <Property Name="LevelID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LevelName" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MinCost" Type="Int32" Nullable="false" />
+          <Property Name="DiscountID" Type="Int32" Nullable="false" />
+          <Property Name="LevelDescription" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Discount" Relationship="BookShopModel.FK_MemberLevel_Discount" FromRole="MemberLevel" ToRole="Discount" />
+          <NavigationProperty Name="Members" Relationship="BookShopModel.FK_Member_MemberLevel" FromRole="MemberLevel" ToRole="Member" />
+        </EntityType>
+        <Association Name="FK_MemberLevel_Discount">
+          <End Type="BookShopModel.Discount" Role="Discount" Multiplicity="1" />
+          <End Type="BookShopModel.MemberLevel" Role="MemberLevel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Discount">
+              <PropertyRef Name="DiscountID" />
+            </Principal>
+            <Dependent Role="MemberLevel">
+              <PropertyRef Name="DiscountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Member_MemberLevel">
+          <End Type="BookShopModel.MemberLevel" Role="MemberLevel" Multiplicity="1" />
+          <End Type="BookShopModel.Member" Role="Member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MemberLevel">
+              <PropertyRef Name="LevelID" />
+            </Principal>
+            <Dependent Role="Member">
+              <PropertyRef Name="LevelID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2229,6 +2325,9 @@
           <EntitySetMapping Name="Members">
             <EntityTypeMapping TypeName="BookShopModel.Member">
               <MappingFragment StoreEntitySet="Member">
+                <ScalarProperty Name="Points" ColumnName="Points" />
+                <ScalarProperty Name="CostAmount" ColumnName="CostAmount" />
+                <ScalarProperty Name="LevelID" ColumnName="LevelID" />
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="MemberEmail" ColumnName="MemberEmail" />
                 <ScalarProperty Name="MemberPassword" ColumnName="MemberPassword" />
@@ -2404,6 +2503,17 @@
                 <ScalarProperty Name="TranslatorDetailID" ColumnName="TranslatorDetailID" />
                 <ScalarProperty Name="TranslatorID" ColumnName="TranslatorID" />
                 <ScalarProperty Name="BookID" ColumnName="BookID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MemberLevels">
+            <EntityTypeMapping TypeName="BookShopModel.MemberLevel">
+              <MappingFragment StoreEntitySet="MemberLevel">
+                <ScalarProperty Name="LevelDescription" ColumnName="LevelDescription" />
+                <ScalarProperty Name="DiscountID" ColumnName="DiscountID" />
+                <ScalarProperty Name="MinCost" ColumnName="MinCost" />
+                <ScalarProperty Name="LevelName" ColumnName="LevelName" />
+                <ScalarProperty Name="LevelID" ColumnName="LevelID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

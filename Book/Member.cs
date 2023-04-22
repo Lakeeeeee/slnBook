@@ -33,6 +33,9 @@ namespace Book
         public string Memberphone { get; set; }
         public string MemberAddress { get; set; }
         public int PaymentID { get; set; }
+        public int LevelID { get; set; }
+        public int CostAmount { get; set; }
+        public int Points { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ActionDetial> ActionDetials { get; set; }
@@ -47,5 +50,6 @@ namespace Book
         public virtual Payment Payment { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Orders { get; set; }
+        public virtual MemberLevel MemberLevel { get; set; }
     }
 }

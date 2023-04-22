@@ -19,6 +19,7 @@ namespace Book
         {
             this.Discount_Detail = new HashSet<Discount_Detail>();
             this.Orders = new HashSet<Order>();
+            this.MemberLevels = new HashSet<MemberLevel>();
         }
     
         public int DiscountID { get; set; }
@@ -33,5 +34,7 @@ namespace Book
         public virtual ICollection<Discount_Detail> Discount_Detail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Orders { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MemberLevel> MemberLevels { get; set; }
     }
 }

@@ -79,6 +79,9 @@
         <AssociationConnector Association="BookShopModel.FK_進貨單明細PurchaseDetail_Store" ManuallyRouted="false" />
         <AssociationConnector Association="BookShopModel.FK_進貨單明細PurchaseDetail_進貨單資料Purchase" ManuallyRouted="false" />
         <AssociationConnector Association="BookShopModel.FK_TranslatorDetail_Translator" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="BookShopModel.MemberLevel" Width="1.5" PointX="3.375" PointY="0.75" />
+        <AssociationConnector Association="BookShopModel.FK_MemberLevel_Discount" />
+        <AssociationConnector Association="BookShopModel.FK_Member_MemberLevel" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
