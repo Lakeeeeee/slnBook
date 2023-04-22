@@ -41,12 +41,16 @@ namespace Book.BackForms
                     {
                         會員編號 = m.MemberID,
                         會員姓名 = m.MemberName,
+                        累積消費 = m.CostAmount,
+                        會員等級 = m.LevelID,
                         會員電子信箱 = m.MemberEmail,
                         會員出生年月日 = m.MemberBrithDate,
                         會員行動電話 = m.Memberphone,
                         會員地址 = m.MemberAddress,
-                        付款方式 = m.Payment.PaymentName
+                        付款方式 = m.Payment.PaymentName,
                     };
+
+
             dGV_mem.DataSource = q.ToList();
         }
         private void geteachCs(DataGridView dGV)
@@ -233,6 +237,10 @@ namespace Book.BackForms
                 if (!string.IsNullOrEmpty(textBox6.Text)) { updateMember.Memberphone = textBox6.Text; } 
                 if(!string.IsNullOrEmpty(textBox7.Text)){ updateMember.MemberAddress = textBox7.Text; }
                 updateMember.PaymentID = payid;
+                int newCostAmount;
+                if (int.TryParse(tB_costAmount.Text, out newCostAmount))
+                    updateMember.CostAmount = newCostAmount;
+                else updateMember.CostAmount = updateMember.CostAmount;
                 BScontent.SaveChanges(); refreshMem();
             }
             else
